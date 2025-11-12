@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bir meleğin dünyaya iniş yıldönümü</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <div class="background-squares-container">
+    </div>
+
+    <div id="cake-page" class="page active">
+        <h1>Dilek tuttttt</h1>
+        <h1>🎉 Mumlara üfle(tıkla)söndür 🎉</h1>
+        
+        <div class="cake-container">
+            <img src="img/cikolatali_pasta.png" alt="Doğum Günü Pastası" class="custom-cake-image">
+            
+            <div class="candles-container">
+                <div class="candle" onclick="blowOutCandle(this)">
+                    <div class="wick"></div>
+                    <div class="flame active"></div>
+                </div>
+                <div class="candle" onclick="blowOutCandle(this)">
+                    <div class="wick"></div>
+                    <div class="flame active"></div>
+                </div>
+                <div class="candle" onclick="blowOutCandle(this)">
+                    <div class="wick"></div>
+                    <div class="flame active"></div>
+                </div>
+            </div>
+        </div>
+
+        <button id="gift-button" class="hidden" onclick="goToGiftPage()">Sana bir hediyem var tıkla 🎁</button>
+    </div>
+
+    <div id="gift-page" class="page hidden">
+        <h1>Bir Hediye Kutusu Var!</h1>
+        <p>KUTUYU AÇÇÇÇÇ</p>
+        
+        <div id="gift-box" onclick="openGiftBox()">
+            <div class="box-top"></div>
+            <div class="box-bottom"></div>
+            <div class="ribbon-left"></div> 
+            <div class="ribbon-right"></div>
+            <div class="bow"></div>
+        </div>
+    </div>
+
+    <div id="hearts-page" class="page hidden">
+        <h1>Hediyeee</h1>
+        <div class="hearts-explosion">
+        </div>
+        <p class="final-message">Sana kendi kalbimi hediye ediyorum meleğim bu seferlik buna param yetti</p>
+        <div class="big-heart hidden-big-heart"></div> 
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

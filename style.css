@@ -1,0 +1,393 @@
+body {
+    font-family: sans-serif;
+    /* SAYFAYI MERKEZLEME AYARLARI */
+    display: flex;
+    justify-content: center; /* Yatayda ortala */
+    align-items: center;    /* Dikeyde ortala */
+    /* ------------------------------ */
+    min-height: 100vh;
+    margin: 0;
+    background-color: #fce4ec; /* Açık pembe arka plan */
+    color: #333;
+    text-align: center;
+    overflow: hidden; 
+    position: relative;
+}
+
+/* --- ARKA PLAN KARELERİ (GRID) --- */
+.background-squares-container {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    /* Otomatik sütun ve satırlar, her kare en az 100px genişlikte olabilir,
+       kalan alanı eşit paylaşır. Böylece daha dinamik bir ızgara oluşur. */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px; /* Kareler arası boşluğu biraz azaltalım */
+    padding: 8px; /* Padding'i de azaltalım */
+    z-index: -1; 
+    overflow: hidden; 
+}
+
+.bg-square {
+    width: 100%;
+    height: 100%;
+    background-size: cover; 
+    background-position: center; 
+    border-radius: 12px; 
+    opacity: 1; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    filter: blur(1.5px); 
+    transition: none; 
+}
+
+/* --- SAYFA YÖNETİMİ (TİTREMEYİ ÇÖZMEK İÇİN GÜNCELLENDİ) --- */
+.page {
+    width: 90%;
+    max-width: 700px; 
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.9); 
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    z-index: 1; 
+    
+    /* ÖNEMLİ: Tüm sayfaları mutlak konuma getirip merkezliyoruz */
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); /* Kendi boyutuna göre merkezleme */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    box-sizing: border-box; 
+}
+
+.hidden {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9); /* Merkezle ve küçült */
+    
+    /* ÖNEMLİ: Gidip gelmeyi önlemek için görünürlüğü kaldır */
+    visibility: hidden; 
+    pointer-events: none; 
+}
+
+.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1); /* Merkezle ve normal boyuta getir */
+    visibility: visible; 
+    pointer-events: all; 
+}
+
+h1 {
+    color: #e91e63;
+    margin-bottom: 20px; 
+}
+
+/* --- PASTA GÖRSELİ İÇİN STİL --- */
+.cake-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    position: relative; 
+    margin: 20px 0; 
+    width: 100%; 
+    max-width: 400px; 
+    height: auto; 
+}
+
+.custom-cake-image {
+    width: 100%; 
+    height: auto; 
+    object-fit: contain; 
+    display: block;
+    position: relative; 
+    z-index: 5; 
+}
+
+/* Mumlar */
+.candles-container {
+    position: absolute;
+    top: 50px; 
+    width: 120px; 
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: space-around;
+    z-index: 15; 
+}
+
+.candle {
+    width: 12px; 
+    height: 35px; 
+    background: linear-gradient(to top, #ffeb3b, #ffd700); 
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.wick {
+    width: 2px;
+    height: 5px;
+    background: #333;
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.flame {
+    width: 10px;
+    height: 20px;
+    background: #ff9800; 
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    box-shadow: 0 0 10px 2px #ffeb3b;
+    transition: opacity 0.3s;
+}
+
+.flame.active {
+    animation: flicker 0.2s infinite alternate;
+}
+
+.flame.hidden-flame {
+    opacity: 0;
+}
+
+@keyframes flicker {
+    from {
+        transform: translate(-50%, -50%) scale(1.0); /* Yeni merkezleme ile uyumlu */
+        box-shadow: 0 0 10px 2px #ffeb3b;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(0.95); /* Yeni merkezleme ile uyumlu */
+        box-shadow: 0 0 8px 1px #ffeb3b;
+    }
+}
+/* Alev flicker animasyonunun düzeltilmiş versiyonunu kullanmak daha iyi olabilir.
+   Ancak bu animasyon içindeki -50% değerleri pastanın üstündeki konumu bozabilir.
+   Eğer titreme pastanın alevlerinde değil de sayfa geçişinde ise, 
+   pastadaki mum konumlandırmasını eski haline bırakalım. */
+@keyframes flicker {
+    from {
+        transform: translateX(-50%) scale(1.0);
+        box-shadow: 0 0 10px 2px #ffeb3b;
+    }
+    to {
+        transform: translateX(-50%) scale(0.95);
+        box-shadow: 0 0 8px 1px #ffeb3b;
+    }
+}
+
+
+/* Buton */
+#gift-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #e91e63;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: background-color 0.3s, opacity 0.3s;
+}
+
+#gift-button:hover {
+    background-color: #c2185b;
+}
+
+/* --- HEDİYE KUTUSU --- */
+#gift-box {
+    width: 180px; 
+    height: 180px;
+    margin: 50px auto;
+    cursor: pointer;
+    position: relative;
+    perspective: 1000px; 
+    transition: transform 0.5s ease-out; 
+}
+
+.box-bottom {
+    width: 100%;
+    height: 100%;
+    background-color: #f06292; 
+    border-radius: 8px; 
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+
+.box-top {
+    width: 105%; 
+    height: 40px; 
+    background-color: #ec407a; 
+    border-radius: 8px; 
+    position: absolute;
+    top: -20px; 
+    left: -2.5%; 
+    transform-origin: 50% 100%;
+    transition: transform 0.6s ease-out; 
+    z-index: 10;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+/* Yeni Şeritler */
+.ribbon-left, .ribbon-right {
+    position: absolute;
+    width: 20px; 
+    height: 100%;
+    background-color: #c2185b; 
+    z-index: 7; 
+    top: 0;
+}
+
+.ribbon-left {
+    left: 20px; 
+}
+
+.ribbon-right {
+    right: 20px; 
+}
+
+.bow {
+    position: absolute;
+    width: 60px; 
+    height: 60px; 
+    top: -50px; 
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #e91e63; 
+    border-radius: 50%;
+    z-index: 12;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+}
+
+.bow::before, .bow::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #e91e63;
+    border-radius: 50%;
+}
+
+.bow::before {
+    top: 15px;
+    left: -10px;
+    transform: rotate(45deg);
+}
+
+.bow::after {
+    top: 15px;
+    right: -10px;
+    transform: rotate(-45deg);
+}
+
+/* Kutu açılma animasyonu */
+.box-open .box-top {
+    transform: rotateX(-100deg) translateY(-50px) translateZ(30px); 
+}
+
+.box-open .ribbon-left {
+    left: -50px; 
+    transition: left 0.5s ease-out;
+}
+.box-open .ribbon-right {
+    right: -50px;
+    transition: right 0.5s ease-out;
+}
+.box-open .bow {
+    top: -100px; 
+    opacity: 0;
+    transition: top 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+
+/* --- KALPLER SAYFASI --- */
+.hearts-explosion {
+    position: relative;
+    width: 100%;
+    height: 200px; 
+    margin: 30px 0;
+    overflow: visible; 
+}
+
+.heart {
+    position: absolute;
+    font-size: 2em;
+    color: #e91e63;
+    animation: heart-fly 2s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes heart-fly {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(1.5) rotate(var(--r));
+    }
+}
+
+.final-message {
+    font-size: 1.5em;
+    color: #1e21e9;
+    font-weight: bold;
+}
+
+/* --- BÜYÜK KALP STİLİ --- */
+.big-heart {
+    position: absolute;
+    bottom: -150px; 
+    left: 50%;
+    transform: translateX(-50%) rotate(-45deg); 
+    width: 200px; 
+    height: 200px;
+    background-color: #e91e63;
+    opacity: 0;
+    z-index: -2; 
+    transition: opacity 1s ease-in, bottom 1s ease-in;
+}
+
+.big-heart::before, .big-heart::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #e91e63;
+    border-radius: 50%;
+}
+
+.big-heart::before {
+    top: -50%;
+    left: 0;
+}
+
+.big-heart::after {
+    left: 50%;
+    top: 0;
+}
+
+.big-heart.show-big-heart {
+    opacity: 1;
+    bottom: 150px; 
+    transition: opacity 1s ease-out, bottom 1s ease-out;
+}
+
+.hidden-big-heart {
+    opacity: 0;
+    pointer-events: none; 
+}
